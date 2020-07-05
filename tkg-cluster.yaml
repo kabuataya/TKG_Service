@@ -1,0 +1,25 @@
+apiVersion: run.tanzu.vmware.com/v1alpha1
+kind: TanzuKubernetesCluster
+metadata:
+  name: tkg-cluster-1
+  namespace: guest
+spec:
+  distribution:
+    version: v1.16.8
+  topology:
+    controlPlane:
+      class: best-effort-xsmall
+      count: 3
+      storageClass: vsan-two-copies
+    workers:
+      class: best-effort-xsmall
+      count: 5
+      storageClass: vsan-two-copies
+  settings:
+    network:
+      cni:
+        name: calico
+      services:
+        cidrBlocks: ["198.53.101.0/12"]
+      pods:
+        cidrBlocks: ["192.0.5.0/16"]

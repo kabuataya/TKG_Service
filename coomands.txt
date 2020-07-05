@@ -1,0 +1,31 @@
+Kubectl get wcpmachine
+kubectl get machines
+kubectl get tanzukubernetesclusters
+kubectl get tanzukubernetesclusters
+kubectl describe tanzukubernetescluster <Cluster-Name>
+
+kubectl get tanzukubernetescluster -n NAMESPACE
+
+kubectl edit tanzukubernetescluster/CLUSTER-NAME
+
+kubectl.exe vsphere login  -u administrator@vsphere.local --insecure-skip-tls-verify --server 192.168.2.33
+
+
+kubectl apply -f https://raw.githubusercontent.com/lamw/vmware-k8s-app-demo/master/yelb-lb.yaml
+
+
+kubectl vsphere login --server=SUPERVISOR-CLUSTER-CONTROL-PLANE-IP
+--tanzu-kubernetes-cluster-name TANZU-KUBERNETES-CLUSTER-NAME
+--tanzu-kubernetes-cluster-namespace SUPERVISOR-NAMESPACE-WHERE-THE-CLUSTER-IS-DEPLOYED
+--vsphere-username VCENTER-SSO-USER-NAME
+
+
+kubectl vsphere login --server=192.168.2.33 -u administrator@vsphere.local --insecure-skip-tls-verify --tanzu-kubernetes-cluster-name tkg-cluster-1 --tanzu-kubernetes-cluster-namespace guest
+
+
+
+kubectl describe virtualmachineclasses
+kubectl get virtualmachineimages
+kubectl describe virtualmachineimages
+
+kubectl vsphere login --server=192.168.2.33 -u administrator@vsphere.local --insecure-skip-tls-verify --tanzu-kubernetes-cluster-name tkg-cluster-1 --tanzu-kubernetes-cluster-namespace guests

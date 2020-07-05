@@ -1,0 +1,93 @@
+C:\Users\Karam>kubectl get tanzukubernetesclusters
+NAME            CONTROL PLANE   WORKER   DISTRIBUTION                     AGE    PHASE
+tkg-cluster-1   3               4        v1.16.8+vmware.1-tkg.3.60d2ffd   103m   creating
+
+C:\Users\Karam>kubectl describe tanzukubernetescluster tkg-cluster-1
+Name:         tkg-cluster-1
+Namespace:    guests
+Labels:       <none>
+Annotations:  kubectl.kubernetes.io/last-applied-configuration:
+                {"apiVersion":"run.tanzu.vmware.com/v1alpha1","kind":"TanzuKubernetesCluster","metadata":{"annotations":{},"name":"tkg-cluster-1","namespa...
+API Version:  run.tanzu.vmware.com/v1alpha1
+Kind:         TanzuKubernetesCluster
+Metadata:
+  Creation Timestamp:  2020-05-10T09:17:30Z
+  Finalizers:
+    tanzukubernetescluster.run.tanzu.vmware.com
+  Generation:        1
+  Resource Version:  956370
+  Self Link:         /apis/run.tanzu.vmware.com/v1alpha1/namespaces/guests/tanzukubernetesclusters/tkg-cluster-1
+  UID:               61913080-ed96-482a-b065-f6993584e07d
+Spec:
+  Distribution:
+    Full Version:  v1.16.8+vmware.1-tkg.3.60d2ffd
+    Version:       v1.16
+  Settings:
+    Network:
+      Cni:
+        Name:  calico
+      Pods:
+        Cidr Blocks:
+          192.168.0.0/16
+      Service Domain:  cluster.local
+      Services:
+        Cidr Blocks:
+          10.96.0.0/12
+  Topology:
+    Control Plane:
+      Class:          best-effort-medium
+      Count:          3
+      Storage Class:  vsan-two-copies
+    Workers:
+      Class:          best-effort-medium
+      Count:          4
+      Storage Class:  vsan-two-copies
+Status:
+  Addons:
+    Cloudprovider:
+      Name:     vmware-guest-cluster
+      Status:   applied
+      Version:  v1.16.8+vmware.1-tkg.3.60d2ffd
+    Cni:
+      Name:     calico
+      Status:   applied
+      Version:  v1.16.8+vmware.1-tkg.3.60d2ffd
+    Csi:
+      Name:     pvcsi
+      Status:   applied
+      Version:  v1.16.8+vmware.1-tkg.3.60d2ffd
+    Dns:
+      Name:     CoreDNS
+      Status:   applied
+      Version:  v1.6.5_vmware.2
+    Proxy:
+      Name:     kube-proxy
+      Status:   applied
+      Version:  1.16.8+vmware.1
+    Psp:
+      Name:     defaultpsp
+      Status:   applied
+      Version:  v1.16.8+vmware.1-tkg.3.60d2ffd
+  Cluster API Status:
+    API Endpoints:
+      Host:  192.168.2.35
+      Port:  6443
+    Phase:   provisioned
+  Node Status:
+    tkg-cluster-1-control-plane-9n8t7:             pending
+    tkg-cluster-1-control-plane-qd8vv:             pending
+    tkg-cluster-1-control-plane-zcwsc:             ready
+    tkg-cluster-1-workers-hwbkh-567f9f5cbf-2w5vk:  pending
+    tkg-cluster-1-workers-hwbkh-567f9f5cbf-6wntq:  pending
+    tkg-cluster-1-workers-hwbkh-567f9f5cbf-qdn4t:  pending
+    tkg-cluster-1-workers-hwbkh-567f9f5cbf-trf6t:  pending
+  Phase:                                           creating
+  Vm Status:
+    tkg-cluster-1-control-plane-9n8t7:             pending
+    tkg-cluster-1-control-plane-qd8vv:             pending
+    tkg-cluster-1-control-plane-zcwsc:             ready
+    tkg-cluster-1-workers-hwbkh-567f9f5cbf-2w5vk:  pending
+    tkg-cluster-1-workers-hwbkh-567f9f5cbf-6wntq:  pending
+    tkg-cluster-1-workers-hwbkh-567f9f5cbf-qdn4t:  pending
+    tkg-cluster-1-workers-hwbkh-567f9f5cbf-trf6t:  pending
+Events:                                            <none>

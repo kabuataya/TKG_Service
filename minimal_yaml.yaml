@@ -1,0 +1,27 @@
+apiVersion: run.tanzu.vmware.com/v1alpha1   #TKG API endpoint
+kind: TanzuKubernetesCluster   #required parameter
+metadata:
+ name: tkg-cluster-2           #cluster name, user defined
+ namespace: guests     #supervisor namespace
+spec:
+ distribution:
+  version: v1.16     #resolved kubernetes version
+  Network:
+      Cni:
+        Name:  calico
+      Pods:
+        Cidr Blocks:
+          172.17.0.0/16
+      Service Domain:  cluster.local
+      Services:
+        Cidr Blocks:
+          10.96.0.0/12
+ topology:
+  controlPlane:
+    count: 3       #number of control plane nodes
+    class: best-effort-medium #vmclass for control plane nodes
+    storageClass: vsan-two-copies #storageclass for control plane
+  workers:
+    count: 4 #number of worker nodes
+    class: best-effort-medium #vmclass for worker nodes
+    storageClass: vsan-two-copies #storageclass for worker nodes

@@ -1,8 +1,8 @@
 apiVersion: run.tanzu.vmware.com/v1alpha1
 kind: TanzuKubernetesCluster
 metadata:
-  name: tkg-cluster-1
-  namespace: guest
+  name: Flight_Aviation_App
+  namespace: gacaapp1
 spec:
   distribution:
     version: v1.16.8

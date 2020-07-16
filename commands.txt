@@ -20,7 +20,7 @@ kubectl vsphere login --server=SUPERVISOR-CLUSTER-CONTROL-PLANE-IP
 --vsphere-username VCENTER-SSO-USER-NAME
 
 
-kubectl vsphere login --server=192.168.2.33 -u administrator@vsphere.local --insecure-skip-tls-verify --tanzu-kubernetes-cluster-name tkg-cluster-1 --tanzu-kubernetes-cluster-namespace guest
+kubectl vsphere login --server=192.168.2.33 -u administrator@vsphere.local --insecure-skip-tls-verify --tanzu-kubernetes-cluster-name tkg-cluster-1 --tanzu-kubernetes-cluster-namespace guests
 
 
 
@@ -29,3 +29,9 @@ kubectl get virtualmachineimages
 kubectl describe virtualmachineimages
 
 kubectl vsphere login --server=192.168.2.33 -u administrator@vsphere.local --insecure-skip-tls-verify --tanzu-kubernetes-cluster-name tkg-cluster-1 --tanzu-kubernetes-cluster-namespace guests
+
+
+applying security policy for the guest cluster to allow priviliged containers. 
+
+kubectl create clusterrolebinding privileged-role-binding --clusterrole=psp:vmware-system-privileged --group=system:authenticated
+

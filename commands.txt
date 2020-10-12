@@ -11,7 +11,7 @@ kubectl get tanzukubernetescluster -n NAMESPACE
 
 kubectl edit tanzukubernetescluster/CLUSTER-NAME
 
-kubectl.exe vsphere login  -u administrator@vsphere.local --insecure-skip-tls-verify --server 192.168.2.33
+kubectl vsphere login  -u administrator@vsphere.local --insecure-skip-tls-verify --server 192.168.2.33
 
 
 kubectl apply -f https://raw.githubusercontent.com/lamw/vmware-k8s-app-demo/master/yelb-lb.yaml

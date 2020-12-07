@@ -23,7 +23,7 @@ kubectl vsphere login --server=SUPERVISOR-CLUSTER-CONTROL-PLANE-IP
 --vsphere-username VCENTER-SSO-USER-NAME
 
 
-kubectl vsphere login --server=192.168.2.33 -u administrator@vsphere.local --insecure-skip-tls-verify --tanzu-kubernetes-cluster-name tkg-cluster-1 --tanzu-kubernetes-cluster-namespace guests
+kubectl vsphere login --server=192.168.2.33 -u administrator@vsphere.local --insecure-skip-tls-verify --tanzu-kubernetes-cluster-name tkg-cluster-3 --tanzu-kubernetes-cluster-namespace guests
 
 
 
@@ -38,3 +38,51 @@ applying security policy for the guest cluster to allow priviliged containers.
 
 kubectl create clusterrolebinding privileged-role-binding --clusterrole=psp:vmware-system-privileged --group=system:authenticated
 
+eyJraWQiOiJDNDlBNkM2ODI2Njk1Mzk3NjVDOTI5Mjk5N0NCMTg1NkJBMjBFNkZEIiwiYWxnIjoiUlMyNTYifQ.eyJzdWIiOiJkZXZlbG9wZXJAc2RkY2xhYi5jb20iLCJhdWQiOiJ2bXdhcmUtdGVzOnZjOnZuczprOHM6ZTYxYjZlZDYtZDIxYi00NGRlLThiMTEtNzBiNGVjYWJhM2I5IiwiZG9tYWluIjoic2RkY2xhYi5jb20iLCJpc3MiOiJodHRwczpcL1wvdmNzYS5zZGRjbGFiLmNvbVwvb3BlbmlkY29ubmVjdFwvdnNwaGVyZS5sb2NhbCIsImdyb3VwX25hbWVzIjpbIkV2ZXJ5b25lQHZzcGhlcmUubG9jYWwiXSwiZXhwIjoxNjA1NTAyNDgzLCJpYXQiOjE2MDU0NjY0ODMsImp0aSI6ImNjNDg4NWQ0LTQyNDgtNDkzOS05OTAyLTNkOWFiODY1YWFhMiIsInVzZXJuYW1lIjoiZGV2ZWxvcGVyIn0.SCzZRMmPtRUC-X2W300lBnUHX3231hch951-QvQqsPZHTDcVGuEdTm_PXzSgZQmp6VAqPXKHqzCrzWgl66ZnBVBIfl2HcH6VHLv_qfRxRGyPJNu1IzgWOIbzD-sLNd87jFm39Cl8sE4X8G8FRn_GCLrUSEp9jO7DFYVHZ4GMFLy9wm9sTFong-3sGBpthO4DU3zL4FTxTrCg0baKsGwozj0kzTD0V1eCHuygiExseGW9uIBkFtcQdBBVVnVZSCn7KRGTCiKfI282XYUiNIrZupotkMzVHkrWPkI6u2HUUnxyzeRSij5td-kW3uDyF5VlWo30pfgu_bwRPu1v2vt8fg
+
+
+
+
+
+function Handler($context, $inputs) {
+    $inputsString = $inputs | ConvertTo-Json -Compress
+    $vcfqdn = $inputs.vcfqdn
+    $vcuser = $inputs.customProperties.vc_user
+    $vcpassword = $inputs.customProperties.vc_pass
+    $script = $inputs.script
+    $remoteuser = $inputs.customProperties.tmpl_user
+    $remotepassword = $inputs.customProperties.tmpl_pass
+    $name = $inputs.resourceNames[0]
+    $hostname = $inputs.customProperties.hostname
+    $ip = $inputs.ipAddress
+    Connect-VIServer $vcfqdn -User $vcuser -Password $vcpassword -Force
+    write-host “Waiting for VM Tools to Start”
+    do {
+    $toolsStatus = (Get-vm -name $name | Get-View).Guest.ToolsStatus
+    write-host $toolsStatus
+    sleep 3
+    } until ( $toolsStatus -eq ‘toolsOk’ )
+    $vm = Get-vm -name $name
+    $output = $inputs.customProperties.softwareName
+    Write-Host "VM OS Type is "$output
+    
+    if ($output -Match "Windows") {
+        $os_type = "Minion installed on Windows"
+        $script = "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser; Invoke-WebRequest https://repo.saltstack.com/windows/Salt-Minion-3002-Py3-x86-Setup.exe -UseBasicParsing -OutFile ~\Downloads\minion.exe"
+        $script2 = "~\Downloads\minion.exe /S /master=$ip /minion-name=$hostname"
+        $runscript = Invoke-VMScript -VM $vm -ScriptText $script -GuestUser $remoteuser -GuestPassword $remotepassword -ToolsWaitSecs 300
+        Write-Host $runscript.ScriptOutput
+        $runscript2 = Invoke-VMScript -VM $vm -ScriptText $script2 -GuestUser $remoteuser -GuestPassword $remotepassword -ToolsWaitSecs 300
+        Write-Host $runscript2.ScriptOutput
+        Write-Host "Minion installed on Windows using EXE"
+    } else {
+        $os_type = "Minion installed on Linux"
+        $script = "curl -L https://bootstrap.saltstack.com -o install_salt.sh && sudo hostnamectl set-hostname $hostname && sudo chmod 777 install_salt.sh && sudo sh install_salt.sh -A $ip"
+        Write-Host $script
+        $runscript = Invoke-VMScript -VM $vm -ScriptText $script -GuestUser $remoteuser -GuestPassword $remotepassword -ToolsWaitSecs 300
+        Write-Host $runscript.ScriptOutput
+        Write-Host = "Used bootstrap"
+    }
+
+    return $os_type
+}
